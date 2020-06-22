@@ -3,443 +3,47 @@
 
 <head>
     <meta charset="utf-8">
-    <title>coding convention</title>
-    <!-- jquery cdn -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Arpeggios</title>
+    <!-- jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.0.min.js"
         integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
-
-    <!-- bootstrap css -->
-    <!--  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
-
-    <!-- bootstrap js -->
-    <!-- need to put bootstrap js in head -->
-    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> -->
-
-    <!-- <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script> -->
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"></script>
+    <!-- font awesome -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
+    <!-- normalize -->
+    <link rel="stylesheet" href="css/normalize.css">
+    <!-- google fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap" rel="stylesheet">
+    <!-- d3 -->
+    <script src="https://d3js.org/d3.v5.min.js"></script>
     <!-- Toen js -->
-    <script src="./Tone.js"></script>
+    <script src="./js/Tone.js"></script>
 
-
-
-    <style type="text/css">
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        #renderPie text {
-            fill: white;
-            font-size: 10px;
-            text-anchor: middle;
-        }
-
-        .arc {
-            cursor: pointer;
-        }
-
-        .arc:hover {
-            opacity: .85
-        }
-
-        .bar {
-            opacity: 0;
-        }
-
-        #renderBar {
-            position: relative;
-        }
-
-        .animateThisLine {
-            position: absolute;
-            background-color: green;
-            width: 6px;
-            height: 100%;
-            top: 0;
-            left: 0;
-            opacity: 0;
-        }
-    </style>
-</head>
+    <link rel="stylesheet" href="css/style.css">
 
 <body>
-    <div id="renderBar"></div>
-
-    <div id="renderPie"></div>
-
-    <button type='button' id='button1'>data1</button>
-    <button type='button' id='button2'>data2</button>
-
-    <script>
-
-        const notesToPlay = {
-            major: {
-                'C': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-                'D': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-                'E': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-                'F': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-                'G': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-                'A': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-                'B': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-            },
-            minor: {
-                'C': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-                'D': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-                'E': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-                'F': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-                'G': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-                'A': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-                'B': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-            }
-        };
-
-        const data1 = ["C4", "D4", "E4", "F4", "G4", "A4"];
-        const data2 = ["D4", "E4", "G4", "A4"];
-
-        let globalAnimateLineDuration = 0;
-        let globalBpm = 60;
-        let globalCurrentData = data2;
-        let globalIndex = null;
-
-        const barSVGWidth = 300;
-        const barSVGHeight = 200;
-
-        function renderPie() {
-            var pieData = [
-                { label: 'C', value: 2 },
-                { label: 'G', value: 2 },
-                { label: 'D', value: 2 },
-                { label: 'A', value: 2 },
-                { label: 'E', value: 2 },
-                { label: 'B', value: 2 },
-                { label: 'F#', value: 2 },
-                { label: 'C#', value: 2 },
-                { label: 'G#', value: 2 },
-                { label: 'D#', value: 2 },
-                { label: 'A#', value: 2 },
-                { label: 'F', value: 2 },
-            ];
-            const colorData = ['#4daf4a', '#377eb8', '#ff7f00', '#984ea3', '#e41a1c'];
-            const canvasWidth = 300;
-            const canvasHeight = 200;
-            const radius = Math.min(canvasWidth, canvasHeight) / 2;
-
-            const svg = d3.select('#renderPie')
-                .append('svg')
-                .attr('width', canvasWidth)
-                .attr('height', canvasHeight);
-
-            const cnt = svg.append('g')
-                .attr('transform', `translate(${canvasWidth / 2}, ${canvasHeight / 2})`);
-
-            const color = d3.scaleOrdinal(colorData);
-
-            const pie = d3.pie().value(function (d) {
-                return d.value;
-            });
-
-            const path = d3.arc()
-                .innerRadius(40)
-                .outerRadius(radius);
-
-            const label = d3.arc()
-                .innerRadius(40)
-                .outerRadius(radius);
-
-            const arcs = cnt.selectAll('arc')
-                .data(pie(pieData))
-                .enter()
-                .append('g')
-                .attr('class', 'arc');
-
-            arcs.append('path')
-                .attr('fill', function (d, i) {
-                    return color(i);
-                })
-                .attr('d', path);
-
-            arcs.append('text')
-                .attr('transform', function (d) {
-                    return 'translate(' + label.centroid(d) + ')';
-                })
-                .attr('dy', '.35em')
-                .text(function (d) {
-                    return d.data.label;
-                });
-
-            // append circle button
-            cnt.append('circle')
-                .attr('cx', 0)
-                .attr('cy', 0)
-                .attr('r', 40)
-                .attr('fill', 'gray')
-                .attr('id', 'circleButton')
-                .attr('data-isPlaying', 'false');
-
-
-            d3.selectAll('.arc').on('click', function () {
-                console.log('arc clicked');
-            });
-
-            d3.select('#circleButton').on('click', function () {
-                console.log('circle clicked');
-
-                const isPlaying = d3.select('#circleButton').attr('data-isPlaying');
-                console.log('isPlaying: ', isPlaying);
-
-                if (isPlaying === 'true') {
-                    console.log('playing true');
-                    d3.select('#circleButton').attr('data-isPlaying', 'false');
-                    Tone.Transport.cancel();
-
-                    // reset animateThisLine
-                    d3.select('.animateThisLine')
-                        .transition()
-                        .duration(0)
-                        .style('left', '0px')
-                        .style('opacity', 0);
-                }
-                else {
-                    console.log('playing false');
-                    d3.select('#circleButton').attr('data-isPlaying', 'true');
-                    playTone();
-                }
-            });
-
-        }
-
-        function renderSVGForBar() {
-            const svg = d3.select('#renderBar')
-                .append('svg')
-                .attr('id', 'barChart')
-                .attr('width', barSVGWidth)
-                .attr('height', barSVGHeight);
-
-            $('#renderBar').append("<div class='animateThisLine'></div>")
-        }
-
-        function renderBars(noteData) {
-            const notesToRender = noteData;
-            const patterns = [
-                { note: 'C2', value: 1 },
-                { note: 'D2', value: 2 },
-                { note: 'E2', value: 3 },
-                { note: 'F2', value: 4 },
-                { note: 'G2', value: 5 },
-                { note: 'A2', value: 6 },
-                { note: 'B2', value: 7 },
-                { note: 'C3', value: 8 },
-                { note: 'D3', value: 9 },
-                { note: 'E3', value: 10 },
-                { note: 'F3', value: 11 },
-                { note: 'G3', value: 12 },
-                { note: 'A3', value: 13 },
-                { note: 'B3', value: 14 },
-                { note: 'C4', value: 15 },
-                { note: 'D4', value: 16 },
-                { note: 'E4', value: 17 },
-                { note: 'F4', value: 18 },
-                { note: 'G4', value: 19 },
-                { note: 'A4', value: 20 },
-                { note: 'B4', value: 21 },
-                { note: 'C5', value: 22 },
-                { note: 'D5', value: 23 },
-                { note: 'E5', value: 24 },
-                { note: 'F5', value: 25 },
-                { note: 'G5', value: 26 },
-                { note: 'A5', value: 27 },
-                { note: 'B5', value: 28 },
-            ];
-
-
-
-            const barData = [];
-
-            for (let i = 0; i < notesToRender.length; i++) {
-
-                for (let j = 0; j < patterns.length; j++) {
-                    const patt = new RegExp(patterns[j].note);
-
-                    if (patt.test(notesToRender[i])) {
-                        barData.push(patterns[j].value);
-                    }
-                }
-            }
-
-            console.log('barData: ', barData);
-
-            const xScale = d3.scaleBand()
-                .domain(barData)
-                .range([0, barSVGWidth]);
-
-            console.log('xScale.bandwidth: ', xScale.bandwidth());
-
-            const yScale = d3.scaleLinear()
-                .domain([0, 28])
-                .range([barSVGHeight, 0])
-                .clamp(true);
-
-            const svg = d3.select('#renderBar').select('svg');
-
-            // Re-render existing bars because enter function only renders additional bars!!!!!!!
-            svg.selectAll('.bar')
-                .data(barData)
-                .transition()
-                .duration(1000)
-                .attr('x', function (d) {
-                    return xScale(d);
-                })
-                .attr('y', function (d) {
-                    return yScale(d);
-                })
-                .attr('width', xScale.bandwidth())
-                .attr('height', function (d) {
-                    // return barSVGHeight - yScale(d);
-                    return 5;
-                });
-
-
-            // enter() function works only render additional bars!!(Won't update current bars)
-            // Need to add transtion at the end???
-            svg.selectAll('.bar')
-                .data(barData)
-                .enter()
-                .append('rect')
-                .attr('class', 'bar')
-                .attr('x', function (d) {
-                    return xScale(d);
-                })
-                .attr('y', function (d) {
-                    return yScale(d);
-                })
-                .attr('width', xScale.bandwidth())
-                .attr('height', function (d) {
-                    // return barSVGHeight - yScale(d);
-                    return 5
-                })
-                .transition()
-                .duration(1000)
-                .style('opacity', 1);
-
-            // exit() function to remove bar
-            svg.selectAll('.bar')
-                .data(barData)
-                .exit()
-                .transition()
-                .duration(1000)
-                .style('opacity', 0)
-                .remove();
-
-
-        }
-
-        function animateLine() {
-
-            // globalAnimateLineDuration = 60000 /globalBpm;
-            // console.log('globalAnimateLineDuration: ', globalAnimateLineDuration);
-            const totalTime = 60000 / globalBpm * globalCurrentData.length;
-            // console.log('totalTime: ', totalTime);
-
-            // reset left to 0
-            const line = d3.select('.animateThisLine');
-
-            line.transition()
-                .duration(0)
-                .style('left', '0px')
-                .style('opacity', 1);
-
-            line.transition()
-                .duration(totalTime)
-                .ease(d3.easeLinear)
-                .style('left', $('#barChart').width() + "px");
-
-            // if(globalIndex % globalCurrentData.length === 0){
-            //   // line animation for the first note
-            //   const initialX = $('#barChart').width() / globalCurrentData.length / 2;
-
-            //   line.style('left', initialX + 'px')
-            //     .style('opacity', 1);
-            //   // console.log('initialX: ' ,initialX);
-
-            //   return;
-            // }
-            // else if(globalIndex % globalCurrentData.length === globalCurrentData.length){
-            //   // for the last note
-            //   line.style('opacity', 0);
-            // }
-            // else{
-            //   // line animation for everhthing except first note and last note
-            //   let left = line.style('left');
-
-            //   console.log('left: ', left);
-            //   left = parseFloat(left.split('px')[0]);
-
-            //   line.transition()
-            //       .duration(500)
-            //       .ease(d3.easeLinear)
-            //       .style('left', left + distance + "px");        
-            // }
-
-        }
-
-        function playTone() {
-
-            Tone.Transport.cancel();
-
-            //create a synth and connect it to the master output (your speakers)
-            const synth = new Tone.Synth().toMaster();
-
-            globalIndex = 0;
-
-            Tone.Transport.bpm.value = globalBpm;
-            console.log(' bpm value: ', Tone.Transport.bpm.value);
-
-            //repeated event every 8th note
-            Tone.Transport.scheduleRepeat(function (time) {
-                //do something with the time
-                repeat(time);
-            }, "4n");
-
-            function repeat(time) {
-
-                if (globalIndex % globalCurrentData.length === 0) {
-                    console.log('first==============================');
-                    animateLine();
-                }
-
-                console.log('time: ', time);
-                let note = globalCurrentData[globalIndex % globalCurrentData.length];
-                synth.triggerAttackRelease(note, '8n', time)
-                globalIndex++;
-            }
-
-            Tone.Transport.start();
-
-        };
-
-
-        $('#button1').on('click', function () {
-            globalCurrentData = data1;
-            renderBars(globalCurrentData);
-        });
-
-        $('#button2').on('click', function () {
-            globalCurrentData = data2;
-            renderBars(globalCurrentData);
-        });
-
-        renderPie();
-        renderSVGForBar();
-        renderBars(globalCurrentData);
-
-        const el = d3.select('body').append('div');
-        el.style('width', 100).style('height', 100).style('background-color', 'red');
-
-    </script>
-
+    <div id='titleDiv'>
+        <h1>Arpeggios</h1>
+    </div>
+    <section>
+        <div id="renderBar"></div>
+
+        <div id="renderPie">
+            <button type='button' id='questionButton'><i class="fas fa-question" style='font-size: 21px; color: #646464;'></i></button>
+            <button type='button' id='bpmButton'><i class="fas fa-tachometer-alt" style='font-size: 26px; color: #646464;'></i></button>
+        </div>
+    </section>
+
+    <!-- footer -->
+    <div id='footer' class='disp-flex justify-content--center align-items--center flex-dir-col'>
+        <div style='padding: 0 0 30px 0;'>
+            <a class='btn github' href="https://github.com/jinredhub"><i class="fab fa-github-alt"></i></a>
+        </div>
+        <p>Copyright <i class="fas fa-copyright"></i> 2020 Jin Redmond</p>
+    </div>
+
+    <script src='js/main.js'></script>
 </body>
 
 </html>

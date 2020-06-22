@@ -1,0 +1,156 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: 'Quicksand', sans-serif;
+    background-color: #e4e4e4;
+}
+
+section{
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #f2f2f2;
+    border-left: 1px solid #c9c9c9;
+    border-right: 1px solid #c9c9c9;
+}
+
+#titleDiv{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid black;
+    height: 70px;
+    font-size: 12px;
+    background-color: white;
+}
+
+/* bar chart======================================== */
+#renderBar {
+    position: relative;
+    background-color: white;
+}
+.bar {
+    opacity: 0;
+}
+.activeBar{
+    fill: red;
+}
+/* end bar chart======================================== */
+
+
+/* pie chart======================================== */
+#renderPie{
+    text-align: center;
+    position: relative;
+}
+#renderPie text {
+    fill: white;
+    font-size: 18px;
+    text-anchor: middle;
+    font-weight: 700;
+}
+.arc {
+    cursor: pointer;
+}
+.arc:hover {
+    opacity: .85
+}
+.activePie{
+    fill: #313131;
+}
+#circleButton{
+    stroke: #b7b7b7;
+    stroke-width: 2;
+}
+#circleButton:hover, .circleGroup:hover{
+    cursor: pointer;
+}
+#questionButton, #bpmButton{
+    position: absolute;
+    border-radius: 100px;
+    border: 1px solid #b7b7b7;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    background-color: white;
+    color: black;
+    cursor: pointer;
+}
+#questionButton{
+    top: 10px;
+    left: 10px;
+}
+#bpmButton{
+    top: 10px;
+    right: 10px;
+}
+#questionButton:focus, #bpmButton:focus, .github:focus{
+    outline: none;
+    border: 2px solid #b7b7b7;
+}
+/* end pie chart======================================== */
+
+
+.animateThisLine {
+    position: absolute;
+    background-color: green;
+    width: 6px;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+
+
+/* footer ======================================== */
+#footer{
+    color: #626262;
+    height: 130px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-top: 1px solid black;
+}
+#footer a{
+    border-radius: 100px !important;
+    padding: 13px 16px !important;
+    font-size: 18px !important;
+    color: white !important;
+}
+#footer .linkedin{
+    background-color: #007bff;
+}
+#footer .linkedin:hover{
+    background-color: #0069b9;
+}
+#footer .linkedin:active{
+    background-color: #015a9e;
+}
+#footer .github{
+    background-color: #868e96;
+}
+#footer .github:hover{
+    background-color: #727b84;
+}
+#footer .github:active{
+    background-color: #676d74;
+}
+
+
+/* media query========================================== */
+
+/* max pie radius is 460px */
+@media(max-width: 420px){
+    #renderPie text {
+        font-size: 12px;
+    }
+}
