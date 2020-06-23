@@ -28,6 +28,12 @@ section{
     background-color: white;
 }
 
+.link{
+    color: #98b31a;
+    text-decoration: none;
+    font-weight: bold;
+}
+
 /* bar chart======================================== */
 #renderBar {
     position: relative;
@@ -44,8 +50,11 @@ section{
 
 /* pie chart======================================== */
 #renderPie{
-    text-align: center;
     position: relative;
+    min-height: calc(100vh - 400px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 #renderPie text {
     fill: white;
@@ -69,6 +78,12 @@ section{
 #circleButton:hover, .circleGroup:hover{
     cursor: pointer;
 }
+#circleButton:before{
+    content: "/E016";
+}
+#renderPie #circleText{
+    fill: black;
+}
 #questionButton, #bpmButton{
     position: absolute;
     border-radius: 100px;
@@ -91,7 +106,7 @@ section{
     top: 10px;
     right: 10px;
 }
-#questionButton:focus, #bpmButton:focus, .github:focus{
+#questionButton:focus, #bpmButton:focus, .github:focus, .closeModal:focus{
     outline: none;
     border: 2px solid #b7b7b7;
 }
@@ -107,6 +122,82 @@ section{
     left: 0;
     opacity: 0;
 }
+
+#builtBy{
+    border-top: 1px solid #646464;
+    color: #c5c5c5;
+    padding-top: 10px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* modal============================================== */
+.allModal{
+    width: 100%;
+    height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 10;
+    overflow: auto;
+    /* text-align: center; */
+}
+.allModal .all-modal-content{
+    background-color: white;
+    padding: 38px 30px;
+    width: 90%;
+    font-size: 16px;
+    box-shadow: 1px 1px 20px 2px;
+    border-radius: 10px;
+    max-width: 500px;
+    min-width: 165px;
+    /* top: 50%; */
+    /* transform: translateY(-50%); */
+    position: relative;
+    display: inline-block;
+    text-align: left;
+}
+.allModal .modalHeader{
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-align: left;
+}
+.allModal .closeModal{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 100px;
+    border: 1px solid gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.closeModal:focus{
+    outline: none;
+    border: 2px solid #b7b7b7;
+}
+
+#bpmModal .all-modal-content{
+    max-width: 360px;
+}
+#bpmInput{
+    border: none;
+    border-bottom: 1px solid gray;
+    text-align: right;
+}
+#metronomeImage{
+    width: 26px;
+    height: 30px;
+    opacity: 0.7;
+}
+/* end modal======================================== */
 
 
 /* footer ======================================== */

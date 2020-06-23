@@ -23,6 +23,7 @@ $(document).ready(function(){
 
     let globalAnimateLineDuration = 0;
     let globalBpm = 120;
+    let globalNewBpm = 120;
     let globalCurrentData = null;
     let globalIndex = null;
 
@@ -175,21 +176,12 @@ $(document).ready(function(){
             .attr('id', 'circleButton')
             .attr('data-isPlaying', 'false');
 
-
-        // cnt.append('text')
-        //     // .html('&#9658;');
-        //     .html('&#9612;&#9612;');
-
-        circleGroup.append('svg:foreignObject')
-            .attr('height', '30px')
-            .attr('width', '30px')
-            .attr('x', '-15')
-            .attr('y', '-15')
-            .html('<i style="font-size: 30px; color: #646464;" class="fas fa-play"></i>');
-            
-            // .attr('x', 0)
-            // .attr('y', 0)
-            // .attr('dy', '.35em');
+        circleGroup.append('image')
+            .attr('width', '36px')
+            .attr('height', '36px')
+            .attr('x', '-18px')
+            .attr('y', '-18px')
+            .attr('xlink:href', 'images/play-icon.png');
 
 
         // add event listener====================================
@@ -269,34 +261,30 @@ $(document).ready(function(){
                 d3.selectAll('.bar').classed('activeBar', false);
 
                 // remove pause icon and change to play button
-                d3.select('.circleGroup').select('foreignObject').remove();
+                d3.select('.circleGroup').select('image').remove();
 
-                d3.select('.circleGroup').append('svg:foreignObject')
-                    .attr('height', '30px')
-                    .attr('width', '30px')
-                    .attr('x', '-15')
-                    .attr('y', '-15')
-                    .html('<i style="font-size: 30px; color: #646464;" class="fas fa-play"></i>');
-            
+                circleGroup.append('image')
+                    .attr('width', '36px')
+                    .attr('height', '36px')
+                    .attr('x', '-18px')
+                    .attr('y', '-18px')
+                    .attr('xlink:href', 'images/play-icon.png');
             }
             else {
                 console.log('playing false');
                 d3.select('#circleButton').attr('data-isPlaying', 'true');
                 playTone();
-
-                // change to play button
-                d3.select('#circleButton').html('<i class="fas fa-play"></i>');
             
                 // remove play icon and change to pause button
-                d3.select('.circleGroup').select('foreignObject').remove()
+                d3.select('.circleGroup').select('image').remove()
 
-                d3.select('.circleGroup').append('svg:foreignObject')
-                .attr('height', '30px')
-                .attr('width', '30px')
-                .attr('x', '-15')
-                .attr('y', '-15')
-                .html('<i style="font-size: 30px; color: #646464;" class="fas fa-pause"></i>');
-        
+                circleGroup.append('image')
+                    .attr('width', '36px')
+                    .attr('height', '36px')
+                    .attr('x', '-18px')
+                    .attr('y', '-18px')
+                    .attr('xlink:href', 'images/pause-icon.png');
+
             }
         });
 
@@ -488,6 +476,29 @@ $(document).ready(function(){
 
     }
 
+    function resumeAnimateLine(){
+        const totalTime = 60000 / globalBpm * globalCurrentData.length;
+        // console.log('totalTime: ', totalTime);
+
+        // total length - current index - 1
+        const timeLeft = 60000 / globalBpm * (globalCurrentData.length - (globalIndex % globalCurrentData.length));
+        // console.log('totalTime: ', totalTime);
+
+        // current index
+        // globalIndex % globalCurrentData.length
+
+        // reset left to 0
+        const line = d3.select('.animateThisLine');
+
+        line.transition()
+            .duration(0);
+
+        line.transition()
+            .duration(timeLeft)
+            .ease(d3.easeLinear)
+            .style('left', $('#barChart').width() + "px");
+    }
+
 
     function playTone(){
         Tone.Transport.cancel();
@@ -506,24 +517,37 @@ $(document).ready(function(){
     }
 
     function song(time){
+        // check if bpm changed
+        if(globalBpm != globalNewBpm){
+            globalBpm = globalNewBpm;
+            Tone.Transport.bpm.value = globalBpm;
+            resumeAnimateLine();
+        }
+
+        const totalTime = 60000 / globalBpm * globalCurrentData.length;
+        console.log('totalTime: ', totalTime);
+
+        // total length - current index - 1
+        const timeLeft = 60000 / globalBpm * (globalCurrentData.length - (globalIndex % globalCurrentData.length + 1));
+        console.log('timeLeft: ', timeLeft);
+
         // render active bar
-        console.log('check: ', globalIndex % globalCurrentData.length);
+        // console.log('check: ', globalIndex % globalCurrentData.length);
         renderCurrentBar(globalIndex % globalCurrentData.length);
 
         // get next note's x position
         if (globalIndex % globalCurrentData.length === 0) {
-            console.log('first==============================');
+            // console.log('first==============================');
             animateLine();
         }
 
-        console.log('time: ', time);
+        // console.log('time: ', time);
         let note = globalCurrentData[globalIndex % globalCurrentData.length];
         synth.triggerAttackRelease(note, '8n', time)
         globalIndex++;
     }
 
     function playQuickChord(){
-        console.log('hi');
         Tone.Transport.cancel();
 
         //create a synth and connect it to the master output (your speakers)
@@ -585,19 +609,54 @@ $(document).ready(function(){
     // };
 
     function renderCurrentBar(index){
-        console.log('index: ', index);
-        console.log('dom el: ', $('.bar')[0]);
+        // console.log('index: ', index);
+        // console.log('dom el: ', $('.bar')[0]);
         $('.bar').removeClass('activeBar');
         $('.bar').eq(index).addClass('activeBar');
     }
 
     $('#questionButton').on('click', function(){
-        console.log('question');
+        $('#questionModal').css('display', 'flex');
     });
 
     $('#bpmButton').on('click', function(){
-        console.log('bpm');
+        $('#bpmModal').css('display', 'flex');
+    });
+
+    $('.closeQuestionModalButton').on('click', function(){
+        $('#questionModal').css('display', 'none');
+    });
+
+    $('.closeBpmModalButton').on('click', function(){
+        $('#bpmModal').css('display', 'none');
     })
+
+    $('#bpmInput').on('change', function(){
+        let bpmVal = $(this).val();
+        console.log('bpmVal: ', bpmVal);
+        if(bpmVal < 60){
+            bpmVal = 60;
+            $(this).val(bpmVal);
+        }
+        else if(bpmVal > 200){
+            bpmVal = 200;
+            $(this).val(bpmVal);
+        }
+        globalNewBpm = bpmVal;
+    });
+
+    // close modal when click outside
+    const questionModal = document.querySelector('#questionModal');
+    const bpmModal = document.querySelector('#bpmModal');
+
+    window.onclick = function(event){
+        if(event.target == questionModal){
+            questionModal.style.display = 'none';
+        }
+        else if(event.target == bpmModal){
+            bpmModal.style.display = 'none';
+        }
+    }
 
 
     renderPie();
