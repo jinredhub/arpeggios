@@ -33,14 +33,13 @@ $(document).ready(function(){
         }
     };
 
-    let globalAnimateLineDuration = 0;
     let globalBpm = 120;
     let globalNewBpm = 120;
     let globalCurrentData = null;
     let globalIndex = null;
 
-    const widthOfSection = $('section').width();
-    const barSVGWidth = widthOfSection;
+    let widthOfSection = $('section').width();
+    let barSVGWidth = widthOfSection;
     const barSVGHeight = 200;
 
     let loopBeat;
@@ -293,6 +292,9 @@ $(document).ready(function(){
     }
 
     function renderSVGForBar() {
+        // remove svg for resizing bar chart
+        d3.select('#renderBar').select('svg').remove();
+
         const svg = d3.select('#renderBar')
             .append('svg')
             .attr('id', 'barChart')
@@ -365,7 +367,7 @@ $(document).ready(function(){
             .range([0, barSVGWidth]);
 
         const yScale = d3.scaleLinear()
-            .domain([-4, 28])
+            .domain([0, 28])
             .range([barSVGHeight, 0])
             .clamp(true);
 
@@ -591,11 +593,20 @@ $(document).ready(function(){
     renderPie();
     renderSVGForBar();
 
+
+    $(window).resize(function(){
+        widthOfSection = $('section').width();
+        barSVGWidth = widthOfSection;
+
+        renderSVGForBar();
+        updateBars(globalCurrentData);
+    });
+
+
     // render initial selection
     globalCurrentData = notesToPlay['major']['C'];
     updateBars(globalCurrentData);
     d3.select('g[data-scale="major"][data-root="C"]').select('path').attr('class', 'activePie');
-
 
 
 });
