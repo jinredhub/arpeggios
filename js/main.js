@@ -18,18 +18,18 @@ $(document).ready(function(){
         },
         // m7
         minor: {
-            'C': ["C4", "D4#", "G4", "A4#", "G4", "D4#"],
-            'C#': ["C4#", "E4", "G4#", "B4", "G4#", "E4"],
-            'D': ["D4", "F4", "A4", "C5", "A4", "F4"],
-            'D#': ["D4#", "F4#", "A4#", "C5#", "A4#", "F4#"],
-            'E': ["E4", "G4", "B4", "D5", "B4", "G4"],
-            'F': ["F4", "G4#", "C5", "D5#", "C5", "G4#"],
-            'F#': ["F4#", "A4", "C5#", "E5", "C5#", "A4"],
-            'G': ["G4", "A4#", "D5", "F5", "D5", "A4#"],
-            'G#': ["G4#", "B4", "D5#", "F5#", "D5#", "B4"],
-            'A': ["A4", "C5", "E5", "G5", "E5", "C5"],
-            'A#': ["A4#", "C5#", "F5", "G5#", "F5", "C5#"],
-            'B': ["B4", "D5", "F5#", "A5", "F5#", "D5"],
+            'c': ["C4", "D4#", "G4", "A4#", "G4", "D4#"],
+            'c#': ["C4#", "E4", "G4#", "B4", "G4#", "E4"],
+            'd': ["D4", "F4", "A4", "C5", "A4", "F4"],
+            'd#': ["D4#", "F4#", "A4#", "C5#", "A4#", "F4#"],
+            'e': ["E4", "G4", "B4", "D5", "B4", "G4"],
+            'f': ["F4", "G4#", "C5", "D5#", "C5", "G4#"],
+            'f#': ["F4#", "A4", "C5#", "E5", "C5#", "A4"],
+            'g': ["G4", "A4#", "D5", "F5", "D5", "A4#"],
+            'g#': ["G4#", "B4", "D5#", "F5#", "D5#", "B4"],
+            'a': ["A4", "C5", "E5", "G5", "E5", "C5"],
+            'a#': ["A4#", "C5#", "F5", "G5#", "F5", "C5#"],
+            'b': ["B4", "D5", "F5#", "A5", "F5#", "D5"],
         }
     };
 
@@ -70,18 +70,18 @@ $(document).ready(function(){
         ];
 
         var innerPieData = [
-            { label: 'D', value: 1 },
-            { label: 'A', value: 1 },
-            { label: 'E', value: 1 },
-            { label: 'B', value: 1 },
-            { label: 'F#', value: 1 },
-            { label: 'C#', value: 1 },
-            { label: 'G#', value: 1 },
-            { label: 'D#', value: 1 },
-            { label: 'A#', value: 1 },
-            { label: 'F', value: 1 },
-            { label: 'C', value: 1 },
-            { label: 'G', value: 1 },
+            { label: 'd', value: 1 },
+            { label: 'a', value: 1 },
+            { label: 'e', value: 1 },
+            { label: 'b', value: 1 },
+            { label: 'f#', value: 1 },
+            { label: 'c#', value: 1 },
+            { label: 'g#', value: 1 },
+            { label: 'd#', value: 1 },
+            { label: 'a#', value: 1 },
+            { label: 'f', value: 1 },
+            { label: 'c', value: 1 },
+            { label: 'g', value: 1 },
         ];
 
         const outerColorData = ['#f6be37', '#d1c12e', '#95c631', '#4bb250', '#45b5a1', '#4598b6', '#4e61d8', '#8064c6', '#a542b1', '#ed3883', '#f75839', '#f7943d'];
