@@ -191,6 +191,7 @@ section{
     border: none;
     border-bottom: 1px solid gray;
     text-align: right;
+    width: 50px;
 }
 #metronomeImage{
     width: 26px;
