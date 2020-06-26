@@ -459,7 +459,7 @@ $(document).ready(function(){
             .duration(0);
 
         line.transition()
-            .duration(timeLeft)
+            .duration(timeLeft / 2)
             .ease(d3.easeLinear)
             .style('left', $('#barChart').width() + "px");
     }
@@ -562,7 +562,7 @@ $(document).ready(function(){
 
     $('#bpmInput').on('change', function(){
         let bpmVal = $(this).val();
-        
+
         if(bpmVal < 60){
             bpmVal = 60;
             $(this).val(bpmVal);
