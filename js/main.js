@@ -47,7 +47,6 @@ $(document).ready(function(){
     let synth;
 
     let widthOfPieDiv = $('#renderPie').width();
-    console.log('widht: ', widthOfPieDiv);
     if(widthOfPieDiv > 500){
         widthOfPieDiv = 500;
     }
@@ -198,17 +197,13 @@ $(document).ready(function(){
 
         // add event listener====================================
         d3.selectAll('.arc').on('click', function () {
-            console.log('arc clicked');
             const scale = $(this).closest('.arc').attr('data-scale');
-            // console.log('scale: ', scale);
 
             const rootNote = $(this).closest('.arc').attr('data-root');
-            // console.log('rootNote: ', rootNote);
 
             const newCurrentData = notesToPlay[scale][rootNote];
 
             const isPlaying = d3.select('#circleButton').attr('data-isPlaying');
-            console.log('check isPlaying: ', isPlaying);
             
             if(newCurrentData.length === globalCurrentData.length){
                 globalCurrentData = newCurrentData;
@@ -224,7 +219,6 @@ $(document).ready(function(){
                 Tone.Transport.cancel();
 
                 // if alreay playing, replay tone
-                console.log('isPlaying', isPlaying);
                 if(isPlaying === 'true'){
                     playTone();
                 }
@@ -253,13 +247,9 @@ $(document).ready(function(){
         });
 
         d3.select('.circleGroup').on('click', function () {
-            console.log('circle clicked');
-
             const isPlaying = d3.select('#circleButton').attr('data-isPlaying');
-            console.log('isPlaying: ', isPlaying);
 
             if (isPlaying === 'true') {
-                console.log('playing true');
                 d3.select('#circleButton').attr('data-isPlaying', 'false');
                 Tone.Transport.cancel();
 
@@ -284,7 +274,6 @@ $(document).ready(function(){
                     .attr('xlink:href', 'images/play-icon.png');
             }
             else {
-                console.log('playing false');
                 d3.select('#circleButton').attr('data-isPlaying', 'true');
                 playTone();
             
@@ -316,45 +305,49 @@ $(document).ready(function(){
     function updateBars(noteData) {
         const notesToRender = noteData;
         const patterns = [
-            { note: 'C2', value: 1 , color: '#f6be37'},
-            { note: 'D2', value: 2 , color: '#d1c12e'},
-            { note: 'E2', value: 3 , color: '#95c631'},
-            { note: 'F2', value: 4 , color: '#f6be37'},
-            { note: 'G2', value: 5 , color: '#d1c12e'},
-            { note: 'A2', value: 6 , color: '#95c631'},
-            { note: 'B2', value: 7 , color: '#f6be37'},
-            { note: 'C3', value: 8 , color: '#d1c12e'},
-            { note: 'D3', value: 9 , color: '#95c631'},
-            { note: 'E3', value: 10 , color: '#f6be37'},
-            { note: 'F3', value: 11 , color: '#d1c12e'},
-            { note: 'G3', value: 12 , color: '#95c631'},
-            { note: 'A3', value: 13 , color: '#f6be37'},
-            { note: 'B3', value: 14 , color: '#d1c12e'},
-            { note: 'C4', value: 15 , color: '#95c631'},
-            { note: 'D4', value: 16 , color: '#f6be37'},
-            { note: 'E4', value: 17 , color: '#d1c12e'},
-            { note: 'F4', value: 18 , color: '#95c631'},
-            { note: 'G4', value: 19 , color: '#f6be37'},
-            { note: 'A4', value: 20 , color: '#d1c12e'},
-            { note: 'B4', value: 21 , color: '#95c631'},
-            { note: 'C5', value: 22 , color: '#f6be37'},
-            { note: 'D5', value: 23 , color: '#d1c12e'},
-            { note: 'E5', value: 24 , color: '#95c631'},
-            { note: 'F5', value: 25 , color: '#f6be37'},
-            { note: 'G5', value: 26 , color: '#d1c12e'},
-            { note: 'A5', value: 27 , color: '#95c631'},
-            { note: 'B5', value: 28 , color: '#f6be37'},
+            { note: 'C4', value: 1  , color: '#f6be37'},
+            { note: 'C4#', value: 2  , color: '#8064c6'},
+            { note: 'D4', value: 3  , color: '#95c631'},
+            { note: 'D4#', value: 4  , color: '#ed3883'},
+            { note: 'E4', value: 5  , color: '#45b5a1'},
+            { note: 'F4', value: 6  , color: '#f7943d'},
+            { note: 'F4#', value: 7  , color: '#4e61d8'},
+            { note: 'G4', value: 8  , color: '#d1c12e'},
+            { note: 'G4#', value: 9  , color: '#a542b1'},
+            { note: 'A4', value: 10  , color: '#4bb250'},
+            { note: 'A4#', value: 11  , color: '#f75839'},
+            { note: 'B4', value: 12  , color: '#4598b6'},
+            { note: 'C5', value: 13  , color: '#f6be37'},
+            { note: 'C5#', value: 14  , color: '#8064c6'},
+            { note: 'D5', value: 15  , color: '#95c631'},
+            { note: 'D5#', value: 16  , color: '#ed3883'},
+            { note: 'E5', value: 17  , color: '#45b5a1'},
+            { note: 'F5', value: 18  , color: '#f7943d'},
+            { note: 'F5#', value: 19  , color: '#4e61d8'},
+            { note: 'G5', value: 20  , color: '#d1c12e'},
+            { note: 'G5#', value: 21  , color: '#a542b1'},
+            { note: 'A5', value: 22  , color: '#4bb250'},
+            { note: 'A5#', value: 23  , color: '#f75839'},
+            { note: 'B5', value: 24  , color: '#4598b6'},
         ];
 
         const barData = [];
 
         for (let i = 0; i < notesToRender.length; i++) {
+            // make it 3 characters for regex
+            if(notesToRender[i].length === 2){
+                notesToRender[i] = notesToRender[i] + " ";
+            }
 
             for (let j = 0; j < patterns.length; j++) {
+                // make it 3 characters for regex
+                if(patterns[j].note.length === 2){
+                    patterns[j].note = patterns[j].note + " ";
+                }
+
                 const patt = new RegExp(patterns[j].note);
 
                 if (patt.test(notesToRender[i])) {
-                    // barData.push(patterns[j].value);
                     barData.push({
                         index: i,
                         value: patterns[j].value,
@@ -363,7 +356,7 @@ $(document).ready(function(){
             }
         }
 
-        console.log('barData: ', barData);
+        // console.log('barData: ', barData);
 
         const xScale = d3.scaleBand()
             .domain(barData.map(function(d){
@@ -371,11 +364,8 @@ $(document).ready(function(){
             }))
             .range([0, barSVGWidth]);
 
-        console.log('svg width: ', barSVGWidth);
-        console.log('xScale.bandwidth: ', xScale.bandwidth());
-
         const yScale = d3.scaleLinear()
-            .domain([0, 28])
+            .domain([-4, 28])
             .range([barSVGHeight, 0])
             .clamp(true);
 
@@ -419,7 +409,6 @@ $(document).ready(function(){
                 return 5;
             })
             .attr('fill', function(d){
-                console.log('d: ', d);
                 const colorIndex = patterns.findIndex(function(val){
                     return val.value === d.value;
                 });
@@ -440,10 +429,7 @@ $(document).ready(function(){
 
     function animateLine() {
 
-        // globalAnimateLineDuration = 60000 /globalBpm;
-        // console.log('globalAnimateLineDuration: ', globalAnimateLineDuration);
         const totalTime = 60000 / globalBpm * globalCurrentData.length /2;
-        // console.log('totalTime: ', totalTime);
 
         // reset left to 0
         const line = d3.select('.animateThisLine');
@@ -462,14 +448,9 @@ $(document).ready(function(){
 
     function resumeAnimateLine(){
         const totalTime = 60000 / globalBpm * globalCurrentData.length;
-        // console.log('totalTime: ', totalTime);
 
-        // total length - current index - 1
+        // total length - current index
         const timeLeft = 60000 / globalBpm * (globalCurrentData.length - (globalIndex % globalCurrentData.length));
-        // console.log('totalTime: ', totalTime);
-
-        // current index
-        // globalIndex % globalCurrentData.length
 
         // reset left to 0
         const line = d3.select('.animateThisLine');
@@ -487,7 +468,6 @@ $(document).ready(function(){
     function playTone(){
         Tone.Transport.cancel();
 
-        //create a synth and connect it to the master output (your speakers)
         synth = new Tone.Synth({
             oscillator: {
                 type: 'triangle6'
@@ -497,7 +477,6 @@ $(document).ready(function(){
         globalIndex = 0;
 
         Tone.Transport.bpm.value = globalBpm;
-        console.log(' bpm value: ', Tone.Transport.bpm.value);
 
         loopBeat = new Tone.Loop(song, '8n');
         Tone.Transport.start();
@@ -512,23 +491,18 @@ $(document).ready(function(){
             }
     
             const totalTime = 60000 / globalBpm * globalCurrentData.length;
-            console.log('totalTime: ', totalTime);
     
-            // total length - current index - 1
+            // total length - current index + 1
             const timeLeft = 60000 / globalBpm * (globalCurrentData.length - (globalIndex % globalCurrentData.length + 1));
-            console.log('timeLeft: ', timeLeft);
     
             // render active bar
-            // console.log('check: ', globalIndex % globalCurrentData.length);
             renderCurrentBar(globalIndex % globalCurrentData.length);
     
             // get next note's x position
             if (globalIndex % globalCurrentData.length === 0) {
-                // console.log('first==============================');
                 animateLine();
             }
     
-            // console.log('time: ', time);
             let note = globalCurrentData[globalIndex % globalCurrentData.length];
             synth.triggerAttackRelease(note, '8n', time)
             globalIndex++;
@@ -540,7 +514,6 @@ $(document).ready(function(){
     function playQuickChord(){
         Tone.Transport.cancel();
 
-        //create a synth and connect it to the master output (your speakers)
         synth = new Tone.Synth({
             oscillator: {
                 type: 'triangle6'
@@ -554,14 +527,9 @@ $(document).ready(function(){
         loopBeat = new Tone.Loop(songg, '8n');
         Tone.Transport.start();
         loopBeat.start(0);
-
-        console.log('here');
         
         function songg(time){
-            console.log('hi');
-
             let note = globalCurrentData[chordIndex % globalCurrentData.length];
-            console.log('check note: ', note);
             synth.triggerAttackRelease(note, '8n', time)
             chordIndex++;
             if(chordIndex === 3){
@@ -570,46 +538,8 @@ $(document).ready(function(){
         }
     }
 
-    
-
-    // function playToneOriginal() {
-
-    //     Tone.Transport.cancel();
-
-    //     //create a synth and connect it to the master output (your speakers)
-    //     const synth = new Tone.Synth().toMaster();
-
-    //     globalIndex = 0;
-
-    //     Tone.Transport.bpm.value = globalBpm;
-    //     console.log(' bpm value: ', Tone.Transport.bpm.value);
-
-    //     //repeated event every 8th note
-    //     Tone.Transport.scheduleRepeat(function (time) {
-    //         //do something with the time
-    //         repeat(time);
-    //     }, "4n");
-
-    //     function repeat(time) {
-
-    //         if (globalIndex % globalCurrentData.length === 0) {
-    //             console.log('first==============================');
-    //             animateLine();
-    //         }
-
-    //         console.log('time: ', time);
-    //         let note = globalCurrentData[globalIndex % globalCurrentData.length];
-    //         synth.triggerAttackRelease(note, '8n', time)
-    //         globalIndex++;
-    //     }
-
-    //     Tone.Transport.start();
-
-    // };
 
     function renderCurrentBar(index){
-        // console.log('index: ', index);
-        // console.log('dom el: ', $('.bar')[0]);
         $('.bar').removeClass('activeBar');
         $('.bar').eq(index).addClass('activeBar');
     }
@@ -632,7 +562,7 @@ $(document).ready(function(){
 
     $('#bpmInput').on('change', function(){
         let bpmVal = $(this).val();
-        console.log('bpmVal: ', bpmVal);
+        
         if(bpmVal < 60){
             bpmVal = 60;
             $(this).val(bpmVal);

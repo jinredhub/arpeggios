@@ -43,7 +43,7 @@ section{
     opacity: 0;
 }
 .activeBar{
-    fill: red;
+    fill: #313131;
 }
 /* end bar chart======================================== */
 
@@ -115,8 +115,8 @@ section{
 
 .animateThisLine {
     position: absolute;
-    background-color: green;
-    width: 6px;
+    background-color: #b6b6b6;
+    width: 4px;
     height: 100%;
     top: 0;
     left: 0;
