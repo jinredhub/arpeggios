@@ -70,6 +70,7 @@ $(document).ready(function(){
         ];
 
         var innerPieData = [
+            { label: 'D', value: 1 },
             { label: 'A', value: 1 },
             { label: 'E', value: 1 },
             { label: 'B', value: 1 },
@@ -81,7 +82,6 @@ $(document).ready(function(){
             { label: 'F', value: 1 },
             { label: 'C', value: 1 },
             { label: 'G', value: 1 },
-            { label: 'D', value: 1 },
         ];
 
         const outerColorData = ['#f6be37', '#d1c12e', '#95c631', '#4bb250', '#45b5a1', '#4598b6', '#4e61d8', '#8064c6', '#a542b1', '#ed3883', '#f75839', '#f7943d'];
