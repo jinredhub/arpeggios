@@ -1,23 +1,35 @@
 $(document).ready(function(){
 
     const notesToPlay = {
+        // M9
         major: {
-            'C': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-            'D': ["A2", "C3", "D3", "E3", "G3", "A3", "C4"],
-            'E': ["A2", "C3", "D3", "E3", "G3", "A3", "D4", "D4"],
-            'F': ["A2", "C3", "D3", "E3", "D3", "A3", "C4", "D4"],
-            'G': ["A2", "C3", "D3", "D3", "G3", "A3", "C4", "D4"],
-            'A': ["A2", "C3", "E3", "E3", "G3", "A3", "C4", "D4"],
-            'B': ["A2", "E3", "D3", "E3", "G3", "A3", "C4", "D4"],
+            'C': ["C4", "E4", "G4", "B4", "D5", "B4", "G4", "E4"],
+            'C#': ["C4#", "F4", "G4#", "C5", "D5", "C5", "G4#", "F4"],
+            'D': ["D4", "F4#", "A4", "C5#", "E5", "C5#", "A4", "F4#"],
+            'D#': ["D4#", "G4", "A4#", "D5", "F5", "D5", "A4#", "G4"],
+            'E': ["E4", "G4#", "B4", "D5#", "F5#", "D5#", "B4", "G4#"],
+            'F': ["F4", "A4", "C5", "E5", "G5", "E5", "C5", "A4"],
+            'F#': ["F4#", "A4#", "C5#", "F5", "G5#", "F5", "C5#", "A4#"],
+            'G': ["G4", "B4", "D5", "F5#", "A5", "F5#", "D5", "B4"],
+            'G#': ["G4#", "C5", "D5#", "G5", "A5#", "G5", "D5#", "C5"],
+            'A': ["A4", "C5#", "E5", "G5#", "B5", "G5#", "E5", "C5#"],
+            'A#': ["A4#", "C5", "D5", "F5", "A5", "F5", "D5", "C5"],
+            'B': ["B4", "C5#", "D5#", "F5#", "A5#", "F5#", "D5#", "C5#"],
         },
+        // m7
         minor: {
-            'C': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-            'D': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-            'E': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-            'F': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-            'G': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-            'A': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
-            'B': ["A2", "C3", "D3", "E3", "G3", "A3", "C4", "D4"],
+            'C': ["C4", "D4#", "G4", "A4#", "G4", "D4#"],
+            'C#': ["C4#", "E4", "G4#", "B4", "G4#", "E4"],
+            'D': ["D4", "F4", "A4", "C5", "A4", "F4"],
+            'D#': ["D4#", "F4#", "A4#", "C5#", "A4#", "F4#"],
+            'E': ["E4", "G4", "B4", "D5", "B4", "G4"],
+            'F': ["F4", "G4#", "C5", "D5#", "C5", "G4#"],
+            'F#': ["F4#", "A4", "C5#", "E5", "C5#", "A4"],
+            'G': ["G4", "A4#", "D5", "F5", "D5", "A4#"],
+            'G#': ["G4#", "B4", "D5#", "F5#", "D5#", "B4"],
+            'A': ["A4", "C5", "E5", "G5", "E5", "C5"],
+            'A#': ["A4#", "C5#", "F5", "G5#", "F5", "C5#"],
+            'B': ["B4", "D5", "F5#", "A5", "F5#", "D5"],
         }
     };
 
@@ -60,6 +72,9 @@ $(document).ready(function(){
         ];
 
         var innerPieData = [
+            { label: 'A', value: 1 },
+            { label: 'E', value: 1 },
+            { label: 'B', value: 1 },
             { label: 'F#', value: 1 },
             { label: 'C#', value: 1 },
             { label: 'G#', value: 1 },
@@ -69,9 +84,6 @@ $(document).ready(function(){
             { label: 'C', value: 1 },
             { label: 'G', value: 1 },
             { label: 'D', value: 1 },
-            { label: 'A', value: 1 },
-            { label: 'E', value: 1 },
-            { label: 'B', value: 1 },
         ];
 
         const outerColorData = ['#f6be37', '#d1c12e', '#95c631', '#4bb250', '#45b5a1', '#4598b6', '#4e61d8', '#8064c6', '#a542b1', '#ed3883', '#f75839', '#f7943d'];
@@ -196,10 +208,7 @@ $(document).ready(function(){
             const newCurrentData = notesToPlay[scale][rootNote];
 
             const isPlaying = d3.select('#circleButton').attr('data-isPlaying');
-
-            if(isPlaying === 'false'){
-                playQuickChord();
-            }
+            console.log('check isPlaying: ', isPlaying);
             
             if(newCurrentData.length === globalCurrentData.length){
                 globalCurrentData = newCurrentData;
@@ -229,6 +238,10 @@ $(document).ready(function(){
 
                 // reset activeBar
                 d3.selectAll('.bar').classed('activeBar', false);
+            }
+
+            if(isPlaying === 'false'){
+                playQuickChord();
             }
 
             // take off activePie class from all arc
@@ -301,8 +314,6 @@ $(document).ready(function(){
     }
 
     function updateBars(noteData) {
-        const outerColorData = ['#f6be37', '#d1c12e', '#95c631', '#4bb250', '#45b5a1', '#4598b6', '#4e61d8', '#8064c6', '#a542b1', '#ed3883', '#f75839', '#f7943d'];
-
         const notesToRender = noteData;
         const patterns = [
             { note: 'C2', value: 1 , color: '#f6be37'},
@@ -431,7 +442,7 @@ $(document).ready(function(){
 
         // globalAnimateLineDuration = 60000 /globalBpm;
         // console.log('globalAnimateLineDuration: ', globalAnimateLineDuration);
-        const totalTime = 60000 / globalBpm * globalCurrentData.length;
+        const totalTime = 60000 / globalBpm * globalCurrentData.length /2;
         // console.log('totalTime: ', totalTime);
 
         // reset left to 0
@@ -446,33 +457,6 @@ $(document).ready(function(){
             .duration(totalTime)
             .ease(d3.easeLinear)
             .style('left', $('#barChart').width() + "px");
-
-        // if(globalIndex % globalCurrentData.length === 0){
-        //   // line animation for the first note
-        //   const initialX = $('#barChart').width() / globalCurrentData.length / 2;
-
-        //   line.style('left', initialX + 'px')
-        //     .style('opacity', 1);
-        //   // console.log('initialX: ' ,initialX);
-
-        //   return;
-        // }
-        // else if(globalIndex % globalCurrentData.length === globalCurrentData.length){
-        //   // for the last note
-        //   line.style('opacity', 0);
-        // }
-        // else{
-        //   // line animation for everhthing except first note and last note
-        //   let left = line.style('left');
-
-        //   console.log('left: ', left);
-        //   left = parseFloat(left.split('px')[0]);
-
-        //   line.transition()
-        //       .duration(500)
-        //       .ease(d3.easeLinear)
-        //       .style('left', left + distance + "px");        
-        // }
 
     }
 
@@ -504,65 +488,80 @@ $(document).ready(function(){
         Tone.Transport.cancel();
 
         //create a synth and connect it to the master output (your speakers)
-        synth = new Tone.Synth().toMaster();
+        synth = new Tone.Synth({
+            oscillator: {
+                type: 'triangle6'
+            }
+        }).toMaster();
 
         globalIndex = 0;
 
         Tone.Transport.bpm.value = globalBpm;
         console.log(' bpm value: ', Tone.Transport.bpm.value);
 
-        loopBeat = new Tone.Loop(song, '4n');
+        loopBeat = new Tone.Loop(song, '8n');
         Tone.Transport.start();
         loopBeat.start(0);
+
+        function song(time){
+            // check if bpm changed
+            if(globalBpm != globalNewBpm){
+                globalBpm = globalNewBpm;
+                Tone.Transport.bpm.value = globalBpm;
+                resumeAnimateLine();
+            }
+    
+            const totalTime = 60000 / globalBpm * globalCurrentData.length;
+            console.log('totalTime: ', totalTime);
+    
+            // total length - current index - 1
+            const timeLeft = 60000 / globalBpm * (globalCurrentData.length - (globalIndex % globalCurrentData.length + 1));
+            console.log('timeLeft: ', timeLeft);
+    
+            // render active bar
+            // console.log('check: ', globalIndex % globalCurrentData.length);
+            renderCurrentBar(globalIndex % globalCurrentData.length);
+    
+            // get next note's x position
+            if (globalIndex % globalCurrentData.length === 0) {
+                // console.log('first==============================');
+                animateLine();
+            }
+    
+            // console.log('time: ', time);
+            let note = globalCurrentData[globalIndex % globalCurrentData.length];
+            synth.triggerAttackRelease(note, '8n', time)
+            globalIndex++;
+        }
     }
 
-    function song(time){
-        // check if bpm changed
-        if(globalBpm != globalNewBpm){
-            globalBpm = globalNewBpm;
-            Tone.Transport.bpm.value = globalBpm;
-            resumeAnimateLine();
-        }
-
-        const totalTime = 60000 / globalBpm * globalCurrentData.length;
-        console.log('totalTime: ', totalTime);
-
-        // total length - current index - 1
-        const timeLeft = 60000 / globalBpm * (globalCurrentData.length - (globalIndex % globalCurrentData.length + 1));
-        console.log('timeLeft: ', timeLeft);
-
-        // render active bar
-        // console.log('check: ', globalIndex % globalCurrentData.length);
-        renderCurrentBar(globalIndex % globalCurrentData.length);
-
-        // get next note's x position
-        if (globalIndex % globalCurrentData.length === 0) {
-            // console.log('first==============================');
-            animateLine();
-        }
-
-        // console.log('time: ', time);
-        let note = globalCurrentData[globalIndex % globalCurrentData.length];
-        synth.triggerAttackRelease(note, '8n', time)
-        globalIndex++;
-    }
+    
 
     function playQuickChord(){
         Tone.Transport.cancel();
 
         //create a synth and connect it to the master output (your speakers)
-        synth = new Tone.Synth().toMaster();
+        synth = new Tone.Synth({
+            oscillator: {
+                type: 'triangle6'
+            }
+        }).toMaster();
 
         let chordIndex = 0;
 
-        Tone.Transport.bpm.value = 540;
+        Tone.Transport.bpm.value = 440;
 
-        loopBeat = new Tone.Loop(song, '4n');
+        loopBeat = new Tone.Loop(songg, '8n');
         Tone.Transport.start();
         loopBeat.start(0);
 
-        function song(time){
+        console.log('here');
+        
+        function songg(time){
+            console.log('hi');
+
             let note = globalCurrentData[chordIndex % globalCurrentData.length];
+            console.log('check note: ', note);
             synth.triggerAttackRelease(note, '8n', time)
             chordIndex++;
             if(chordIndex === 3){
