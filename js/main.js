@@ -4,39 +4,42 @@ $(document).ready(function(){
         // M9
         major: {
             'C': ["C4", "E4", "G4", "B4", "D5", "B4", "G4", "E4"],
-            'C#': ["C4#", "F4", "G4#", "C5", "D5", "C5", "G4#", "F4"],
-            'D': ["D4", "F4#", "A4", "C5#", "E5", "C5#", "A4", "F4#"],
-            'D#': ["D4#", "G4", "A4#", "D5", "F5", "D5", "A4#", "G4"],
-            'E': ["E4", "G4#", "B4", "D5#", "F5#", "D5#", "B4", "G4#"],
+            'C#': ["C#4", "F4", "G#4", "C5", "D5", "C5", "G#4", "F4"],
+            'D': ["D4", "F#4", "A4", "C#5", "E5", "C#5", "A4", "F#4"],
+            'D#': ["D#4", "G4", "A#4", "D5", "F5", "D5", "A#4", "G4"],
+            'E': ["E4", "G#4", "B4", "D#5", "F#5", "D#5", "B4", "G#4"],
             'F': ["F4", "A4", "C5", "E5", "G5", "E5", "C5", "A4"],
-            'F#': ["F4#", "A4#", "C5#", "F5", "G5#", "F5", "C5#", "A4#"],
-            'G': ["G4", "B4", "D5", "F5#", "A5", "F5#", "D5", "B4"],
-            'G#': ["G4#", "C5", "D5#", "G5", "A5#", "G5", "D5#", "C5"],
-            'A': ["A4", "C5#", "E5", "G5#", "B5", "G5#", "E5", "C5#"],
-            'A#': ["A4#", "C5", "D5", "F5", "A5", "F5", "D5", "C5"],
-            'B': ["B4", "C5#", "D5#", "F5#", "A5#", "F5#", "D5#", "C5#"],
+            'F#': ["F#4", "A#4", "C#5", "F5", "G#5", "F5", "C#5", "A#4"],
+            'G': ["G4", "B4", "D5", "F#5", "A5", "F#5", "D5", "B4"],
+            'G#': ["G#4", "C5", "D#5", "G5", "A#5", "G5", "D#5", "C5"],
+            'A': ["A4", "C#5", "E5", "G#5", "B5", "G#5", "E5", "C#5"],
+            'A#': ["A#4", "C5", "D5", "F5", "A5", "F5", "D5", "C5"],
+            'B': ["B4", "C#5", "D#5", "F#5", "A#5", "F#5", "D#5", "C#5"],
         },
         // m7
         minor: {
-            'c': ["C4", "D4#", "G4", "A4#", "G4", "D4#"],
-            'c#': ["C4#", "E4", "G4#", "B4", "G4#", "E4"],
+            'c': ["C4", "D#4", "G4", "A#4", "G4", "D#4"],
+            'c#': ["C#4", "E4", "G#4", "B4", "G#4", "E4"],
             'd': ["D4", "F4", "A4", "C5", "A4", "F4"],
-            'd#': ["D4#", "F4#", "A4#", "C5#", "A4#", "F4#"],
+            'd#': ["D#4", "F#4", "A#4", "C#5", "A#4", "F#4"],
             'e': ["E4", "G4", "B4", "D5", "B4", "G4"],
-            'f': ["F4", "G4#", "C5", "D5#", "C5", "G4#"],
-            'f#': ["F4#", "A4", "C5#", "E5", "C5#", "A4"],
-            'g': ["G4", "A4#", "D5", "F5", "D5", "A4#"],
-            'g#': ["G4#", "B4", "D5#", "F5#", "D5#", "B4"],
+            'f': ["F4", "G#4", "C5", "D#5", "C5", "G#4"],
+            'f#': ["F#4", "A4", "C#5", "E5", "C#5", "A4"],
+            'g': ["G4", "A#4", "D5", "F5", "D5", "A#4"],
+            'g#': ["G#4", "B4", "D#5", "F#5", "D#5", "B4"],
             'a': ["A4", "C5", "E5", "G5", "E5", "C5"],
-            'a#': ["A4#", "C5#", "F5", "G5#", "F5", "C5#"],
-            'b': ["B4", "D5", "F5#", "A5", "F5#", "D5"],
+            'a#': ["A#4", "C#5", "F5", "G#5", "F5", "C#5"],
+            'b': ["B4", "D5", "F#5", "A5", "F#5", "D5"],
         }
     };
 
     let globalBpm = 120;
     let globalNewBpm = 120;
     let globalCurrentData = null;
-    let globalIndex = null;
+    let globalIndex = 0;
+    let globalRepeatPlayToneFunction = false;
+    let globalPlayNoteSetTimeout;
+    const globalAudioContext = new (window.AudioContext || window.webkitAudioContext)();
 
     let widthOfSection = $('section').width();
     let barSVGWidth = widthOfSection;
@@ -214,14 +217,9 @@ $(document).ready(function(){
 
                 updateBars(globalCurrentData);
 
-                // reset tone js
-                Tone.Transport.cancel();
+                // reset index
+                globalIndex = 0;
 
-                // if alreay playing, replay tone
-                if(isPlaying === 'true'){
-                    playTone();
-                }
-                
                 // reset animateThisLine
                 d3.select('.animateThisLine')
                     .transition()
@@ -231,10 +229,17 @@ $(document).ready(function(){
 
                 // reset activeBar
                 d3.selectAll('.bar').classed('activeBar', false);
+
+                // if alreay playing, replay tone
+                if(isPlaying === 'true'){
+                    clearTimeout(globalPlayNoteSetTimeout);
+                    globalRepeatPlayToneFunction = true;
+                    playTone();
+                }
             }
 
             if(isPlaying === 'false'){
-                playQuickChord();
+                playThreeNotes();
             }
 
             // take off activePie class from all arc
@@ -250,7 +255,9 @@ $(document).ready(function(){
 
             if (isPlaying === 'true') {
                 d3.select('#circleButton').attr('data-isPlaying', 'false');
-                Tone.Transport.cancel();
+
+                globalRepeatPlayToneFunction = false;
+                clearTimeout(globalPlayNoteSetTimeout);
 
                 // reset animateThisLine
                 d3.select('.animateThisLine')
@@ -260,7 +267,7 @@ $(document).ready(function(){
                     .style('opacity', 0);
 
                 // reset activeBar
-                d3.selectAll('.bar').classed('activeBar', false);
+                // d3.selectAll('.bar').classed('activeBar', false);
 
                 // remove pause icon and change to play button
                 d3.select('.circleGroup').select('image').remove();
@@ -274,6 +281,12 @@ $(document).ready(function(){
             }
             else {
                 d3.select('#circleButton').attr('data-isPlaying', 'true');
+
+                // reset index
+                globalIndex = 0;
+                
+                clearTimeout(globalPlayNoteSetTimeout);
+                globalRepeatPlayToneFunction = true;
                 playTone();
             
                 // remove play icon and change to pause button
@@ -308,28 +321,28 @@ $(document).ready(function(){
         const notesToRender = noteData;
         const patterns = [
             { note: 'C4', value: 1  , color: '#f6be37'},
-            { note: 'C4#', value: 2  , color: '#8064c6'},
+            { note: 'C#4', value: 2  , color: '#8064c6'},
             { note: 'D4', value: 3  , color: '#95c631'},
-            { note: 'D4#', value: 4  , color: '#ed3883'},
+            { note: 'D#4', value: 4  , color: '#ed3883'},
             { note: 'E4', value: 5  , color: '#45b5a1'},
             { note: 'F4', value: 6  , color: '#f7943d'},
-            { note: 'F4#', value: 7  , color: '#4e61d8'},
+            { note: 'F#4', value: 7  , color: '#4e61d8'},
             { note: 'G4', value: 8  , color: '#d1c12e'},
-            { note: 'G4#', value: 9  , color: '#a542b1'},
+            { note: 'G#4', value: 9  , color: '#a542b1'},
             { note: 'A4', value: 10  , color: '#4bb250'},
-            { note: 'A4#', value: 11  , color: '#f75839'},
+            { note: 'A#4', value: 11  , color: '#f75839'},
             { note: 'B4', value: 12  , color: '#4598b6'},
             { note: 'C5', value: 13  , color: '#f6be37'},
-            { note: 'C5#', value: 14  , color: '#8064c6'},
+            { note: 'C#5', value: 14  , color: '#8064c6'},
             { note: 'D5', value: 15  , color: '#95c631'},
-            { note: 'D5#', value: 16  , color: '#ed3883'},
+            { note: 'D#5', value: 16  , color: '#ed3883'},
             { note: 'E5', value: 17  , color: '#45b5a1'},
             { note: 'F5', value: 18  , color: '#f7943d'},
-            { note: 'F5#', value: 19  , color: '#4e61d8'},
+            { note: 'F#5', value: 19  , color: '#4e61d8'},
             { note: 'G5', value: 20  , color: '#d1c12e'},
-            { note: 'G5#', value: 21  , color: '#a542b1'},
+            { note: 'G#5', value: 21  , color: '#a542b1'},
             { note: 'A5', value: 22  , color: '#4bb250'},
-            { note: 'A5#', value: 23  , color: '#f75839'},
+            { note: 'A#5', value: 23  , color: '#f75839'},
             { note: 'B5', value: 24  , color: '#4598b6'},
         ];
 
@@ -467,77 +480,148 @@ $(document).ready(function(){
     }
 
 
+    function getFrequency (note) {
+        var notes = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'],
+            octave,
+            keyNumber;
+
+        if (note.length === 3) {
+            octave = note.charAt(2);
+        } else {
+            octave = note.charAt(1);
+        }
+
+        keyNumber = notes.indexOf(note.slice(0, -1));
+
+        if (keyNumber < 3) {
+            keyNumber = keyNumber + 12 + ((octave - 1) * 12) + 1; 
+        } else {
+            keyNumber = keyNumber + ((octave - 1) * 12) + 1; 
+        }
+
+        // Return frequency of note
+        return 440 * Math.pow(2, (keyNumber- 49) / 12);
+    };
+
+
+
     function playTone(){
-        Tone.Transport.cancel();
+        if(globalIndex >= globalCurrentData.length){
+            globalIndex = 0;
+        }
 
-        synth = new Tone.Synth({
-            oscillator: {
-                type: 'triangle6'
-            }
-        }).toMaster();
+        // check if bpm changed
+        if(globalBpm != globalNewBpm){
+            globalBpm = globalNewBpm;
 
-        globalIndex = 0;
+            resumeAnimateLine();
+        }
 
-        Tone.Transport.bpm.value = globalBpm;
+        // render active bar
+        renderCurrentBar(globalIndex % globalCurrentData.length);
 
-        loopBeat = new Tone.Loop(song, '8n');
-        Tone.Transport.start();
-        loopBeat.start(0);
+        if (globalIndex === 0) {
+            animateLine();
+        }
 
-        function song(time){
-            // check if bpm changed
-            if(globalBpm != globalNewBpm){
-                globalBpm = globalNewBpm;
-                Tone.Transport.bpm.value = globalBpm;
-                resumeAnimateLine();
-            }
-    
-            const totalTime = 60000 / globalBpm * globalCurrentData.length;
-    
-            // total length - current index + 1
-            const timeLeft = 60000 / globalBpm * (globalCurrentData.length - (globalIndex % globalCurrentData.length + 1));
-    
-            // render active bar
-            renderCurrentBar(globalIndex % globalCurrentData.length);
-    
-            // get next note's x position
-            if (globalIndex % globalCurrentData.length === 0) {
-                animateLine();
-            }
-    
-            let note = globalCurrentData[globalIndex % globalCurrentData.length];
-            synth.triggerAttackRelease(note, '8n', time)
-            globalIndex++;
+        let note = globalCurrentData[globalIndex];
+
+        const newFreq = getFrequency(note.split(' ')[0]);
+
+        // calculate length
+        const newLengthNum = '8n'.split('n')[0];
+        const newLengthSec = Number((4 * (60 / globalBpm)) / newLengthNum);
+
+        // trigger garbage collection
+        let oscillator = null;
+        let gain = null;
+
+        oscillator = globalAudioContext.createOscillator();
+
+        // create instance of GainNode
+        gain = globalAudioContext.createGain();
+
+        gain.gain.value = 0.4;
+        oscillator.connect(gain);
+        gain.connect(globalAudioContext.destination);
+
+        let now = globalAudioContext.currentTime;
+
+        oscillator.frequency.setValueAtTime(newFreq, now);
+        oscillator.type = 'triangle';
+
+        oscillator.start(now);
+        
+        const decayRate = 1.5 // seconds
+        gain.gain.exponentialRampToValueAtTime(0.001, now + decayRate)
+
+        setTimeout(()=>oscillator.stop(now), newLengthSec * 1000);
+
+        globalIndex++;
+
+        if(globalRepeatPlayToneFunction){
+            globalPlayNoteSetTimeout = setTimeout(function(){
+                playTone();
+            }, newLengthSec * 1000);
+        }
+        else{
+            // clear activeBar
+            d3.selectAll('.bar').classed('activeBar', false);
         }
     }
 
     
 
-    function playQuickChord(){
-        Tone.Transport.cancel();
+    function playThreeNotes(){
+        let index = 0;
 
-        synth = new Tone.Synth({
-            oscillator: {
-                type: 'triangle6'
+        (function playOneNote(){
+            let note = globalCurrentData[index];
+    
+            const newFreq = getFrequency(note.split(' ')[0]);
+    
+            // calculate length
+            const newLengthNum = '8n'.split('n')[0];
+            let newLengthSec = Number((4 * (60 / 330)) / newLengthNum);
+
+            // longer sound for 3rd note
+            if(index === 2){
+                newLengthSec = 0.5;
             }
-        }).toMaster();
-
-        let chordIndex = 0;
-
-        Tone.Transport.bpm.value = 440;
-
-        loopBeat = new Tone.Loop(songg, '8n');
-        Tone.Transport.start();
-        loopBeat.start(0);
-        
-        function songg(time){
-            let note = globalCurrentData[chordIndex % globalCurrentData.length];
-            synth.triggerAttackRelease(note, '8n', time)
-            chordIndex++;
-            if(chordIndex === 3){
-                Tone.Transport.cancel();
+    
+            // trigger garbage collection
+            let oscillator = null;
+            let gain = null;
+    
+            oscillator = globalAudioContext.createOscillator();
+    
+            // create instance of GainNode
+            gain = globalAudioContext.createGain();
+    
+            gain.gain.value = 0.2;
+            oscillator.connect(gain);
+            gain.connect(globalAudioContext.destination);
+    
+            let now = globalAudioContext.currentTime;
+    
+            oscillator.frequency.setValueAtTime(newFreq, now);
+            oscillator.type = 'triangle';
+    
+            oscillator.start(now);
+            
+            const decayRate = 0.9 // seconds
+            gain.gain.exponentialRampToValueAtTime(0.001, now + decayRate)
+    
+            setTimeout(()=>oscillator.stop(now), newLengthSec * 1000);
+            
+            index++;
+    
+            if(index < 3){
+                setTimeout(function(){
+                    playOneNote();
+                }, newLengthSec * 1000);
             }
-        }
+        })();
     }
 
 
