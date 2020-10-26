@@ -7,7 +7,7 @@
 
 body{
     font-family: 'Quicksand', sans-serif;
-    background-color: #a0a0a0;
+    background-color: #cccbcb;
 }
 
 section{
@@ -17,7 +17,7 @@ section{
     border-left: 1px solid #c9c9c9;
     border-right: 1px solid #c9c9c9;
     border-radius: 16px;
-    box-shadow: 0 8px 30px rgb(0,0,0,0.3);
+    box-shadow: 0 8px 30px rgb(0,0,0,0.2);
 }
 
 #navbar{
