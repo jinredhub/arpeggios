@@ -693,4 +693,15 @@ $(document).ready(function(){
     d3.select('g[data-scale="major"][data-root="C"]').select('path').attr('class', 'activePie');
 
 
+    // toggle between show/hide the mobile navbar menu
+    $('.hamburgerIcon').on('click', function(){
+        const container = document.querySelector('.mobildLinks');
+        if(container.style.display === 'block'){
+            container.style.display = "none";
+        }
+        else{
+            container.style.display = 'block';
+        }
+    });
+
 });
